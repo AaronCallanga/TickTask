@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# Build files
+*.log
+*.tmp
+
+# Documentation
+README.md
+HELP.md
+*.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker/
+
+# Environment
+.env
+.env.*
+
+# Test files
+src/test/
+
+# OS
+.DS_Store
+Thumbs.db
