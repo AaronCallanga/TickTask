@@ -11,7 +11,7 @@ resources:
 
 images:
   - name: ghcr.io/aaroncallanga/cicd-pipeline
-    newTag: e065a16
+    newTag: e20c11c
 
 labels:
   - pairs:
