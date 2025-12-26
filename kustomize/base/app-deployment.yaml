@@ -73,8 +73,10 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 3
             failureThreshold: 3
-      imagePullSecrets:
-        - name: ghcr-secret
+      # imagePullSecrets not needed for public GHCR repos
+      # Uncomment below for private repos:
+      # imagePullSecrets:
+      #   - name: ghcr-secret
 
 ---
 apiVersion: v1
