@@ -10,8 +10,8 @@ resources:
   - app-deployment.yaml
 
 images:
-  - name: ghcr.io/aaroncallanga/cicd-pipeline
-    newTag: 760b386
+  - name: ghcr.io/aaroncallanga/task-manager
+    newTag: 4dec947
 
 labels:
   - pairs:
