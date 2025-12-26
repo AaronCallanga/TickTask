@@ -1,0 +1,25 @@
+# Prod Environment Overlay
+# Higher resource requirements, multiple replicas for HA
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: task-manager
+
+resources:
+  - ../../base
+
+# Prod-specific image tag (should be pinned to specific version in production)
+images:
+  - name: ghcr.io/aaroncallanga/task-manager
+    newTag: latest
+
+# Prod-specific labels
+labels:
+  - pairs:
+      environment: prod
+    includeSelectors: true
+
+# Strategic merge patches for prod environment
+patches:
+  - path: patches.yaml

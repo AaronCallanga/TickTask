@@ -1,0 +1,61 @@
+# Prod Environment Patches
+# Multiple replicas for HA, higher resource limits for production workloads
+
+# Task Manager Deployment - Prod settings
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: task-manager
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+
+---
+# PostgreSQL Deployment - Prod settings (single replica, but more resources)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: postgres
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+---
+# ConfigMap - Prod settings (disable SQL logging)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-manager-config
+data:
+  JPA_SHOW_SQL: "false"
+
+---
+# PVC - Larger storage for prod
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  resources:
+    requests:
+      storage: 10Gi

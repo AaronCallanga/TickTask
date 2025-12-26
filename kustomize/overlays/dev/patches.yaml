@@ -1,0 +1,50 @@
+# Dev Environment Patches
+# Single replica, lower resource limits for development
+
+# Task Manager Deployment - Dev settings
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: task-manager
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+
+---
+# PostgreSQL Deployment - Dev settings
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: postgres
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+
+---
+# ConfigMap - Dev settings (enable SQL logging for debugging)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-manager-config
+data:
+  JPA_SHOW_SQL: "true"

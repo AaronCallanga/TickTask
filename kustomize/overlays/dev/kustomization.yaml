@@ -1,0 +1,28 @@
+# Dev Environment Overlay
+# Lower resource requirements, single replica
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: task-manager
+
+resources:
+  - ../../base
+
+# Environment-specific naming
+nameSuffix: ""
+
+# Dev-specific image tag (optional - can be overridden by CI)
+images:
+  - name: ghcr.io/aaroncallanga/task-manager
+    newTag: latest
+
+# Dev-specific labels
+labels:
+  - pairs:
+      environment: dev
+    includeSelectors: true
+
+# Strategic merge patches for dev environment
+patches:
+  - path: patches.yaml

@@ -1,0 +1,45 @@
+# ArgoCD Application for Dev Environment
+# Points to kustomize/overlays/dev with targetRevision: HEAD
+#
+# WHY targetRevision: HEAD?
+# - HEAD always tracks the latest commit on the default branch
+# - Automatically picks up changes without updating the Application manifest
+# - Works consistently even if default branch is renamed (master → main)
+# - Industry standard for GitOps workflows
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: task-manager-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    environment: dev
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/AaronCallanga/task-manager.git
+    targetRevision: HEAD
+    path: kustomize/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: task-manager
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
