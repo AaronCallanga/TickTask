@@ -303,8 +303,8 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 # Wait for ArgoCD to be ready
 kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n argocd
 
-# Expose ArgoCD UI
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort", "ports": [{"port": 443, "targetPort": 8080, "nodePort": 30081}]}}'
+# Expose ArgoCD UI (PowerShell - use escaped quotes)
+kubectl patch svc argocd-server -n argocd --type=merge -p '{\"spec\":{\"type\":\"NodePort\",\"ports\":[{\"port\":443,\"targetPort\":8080,\"nodePort\":30081}]}}'
 
 # Get admin password
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }

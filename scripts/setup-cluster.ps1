@@ -55,8 +55,8 @@ Write-Host "✓ ArgoCD installed successfully" -ForegroundColor Green
 # -------------------------------------------
 Write-Host "`n[3/5] Configuring ArgoCD access..." -ForegroundColor Yellow
 
-# Patch ArgoCD server to use NodePort
-kubectl patch svc argocd-server -n $ARGOCD_NAMESPACE -p '{"spec": {"type": "NodePort", "ports": [{"port": 443, "targetPort": 8080, "nodePort": 30081}]}}'
+# Patch ArgoCD server to use NodePort (escaped quotes for PowerShell)
+kubectl patch svc argocd-server -n $ARGOCD_NAMESPACE --type=merge -p '{\"spec\":{\"type\":\"NodePort\",\"ports\":[{\"port\":443,\"targetPort\":8080,\"nodePort\":30081}]}}'
 
 # Get initial admin password
 $ARGOCD_PASSWORD = kubectl -n $ARGOCD_NAMESPACE get secret argocd-initial-admin-secret -o jsonpath="{.data.password}"
