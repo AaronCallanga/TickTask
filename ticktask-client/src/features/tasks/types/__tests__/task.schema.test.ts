@@ -5,7 +5,7 @@ import {
     UpdateTaskSchema,
     PrioritySchema,
     TaskStatusSchema,
-} from '../types';
+} from '../index';
 
 describe('Task Schemas', () => {
     describe('PrioritySchema', () => {

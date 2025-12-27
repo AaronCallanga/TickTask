@@ -1,14 +1,13 @@
-# Nginx configuration for TickTask Frontend
+# Nginx Configuration Template for TickTask Frontend
 #
-# This configuration:
-# 1. Serves the React SPA static files
-# 2. Proxies /api/* requests to the backend service
-# 3. Handles SPA routing (returns index.html for all routes)
+# This is a TEMPLATE file that uses environment variables.
+# At container startup, envsubst replaces ${VAR} with actual values.
 #
-# The proxy approach solves the ephemeral container IP problem:
-# - Docker's internal DNS resolves "app" to the backend container's IP
-# - Frontend uses relative URLs (/api/tasks), nginx routes to backend
-# - No need to bake in VITE_API_URL at build time
+# Required Environment Variables:
+#   API_BACKEND_URL - The backend API URL (e.g., http://app:8080 or http://ticktask-api:8080)
+#
+# Docker Compose: API_BACKEND_URL=http://app:8080
+# Kubernetes:     API_BACKEND_URL=http://ticktask-api-service:8080
 
 server {
     listen 80;
@@ -28,10 +27,11 @@ server {
     # ===========================================
     # API Proxy to Backend Service
     # ===========================================
-    # "app" is the Docker service name, resolved by Docker DNS
-    # This handles ephemeral container IPs automatically
+    # The ${API_BACKEND_URL} is replaced at runtime by envsubst
+    # - Docker Compose: resolves to http://app:8080
+    # - Kubernetes: resolves to http://ticktask-api-service:8080
     location /api/ {
-        proxy_pass http://app:8080/api/;
+        proxy_pass ${API_BACKEND_URL}/api/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -41,7 +41,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
         
-        # Timeout settings for long-running requests
+        # Timeout settings
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;

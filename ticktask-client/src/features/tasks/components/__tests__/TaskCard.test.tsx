@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { TaskCard } from '../components/TaskCard';
-import type { Task } from '../types';
+import { TaskCard } from '../TaskCard';
+import type { Task } from '../../types';
 
 const mockTask: Task = {
     id: 1,

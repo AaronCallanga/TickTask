@@ -6,8 +6,7 @@
 # - React frontend (served by nginx)
 #
 # The frontend uses nginx to proxy /api requests to the backend.
-# This avoids CORS issues and doesn't require VITE_API_URL since
-# the frontend makes relative API calls (/api/...) that nginx routes.
+# The API_BACKEND_URL environment variable configures where nginx routes requests.
 
 services:
   # ===========================================
@@ -51,7 +50,6 @@ services:
       DATABASE_PASSWORD: postgres
       JPA_DDL_AUTO: update
       JPA_SHOW_SQL: "false"
-      # Allow requests from nginx container and local dev
       CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173,http://client"
     depends_on:
       db:
@@ -62,27 +60,20 @@ services:
   # ===========================================
   # Frontend Client (React + Nginx)
   # ===========================================
-  # 
-  # IMPORTANT: VITE_API_URL is intentionally empty!
-  # 
-  # The React app uses relative URLs (/api/tasks) for API calls.
-  # Nginx proxies these requests to the backend service.
-  # This approach:
-  # - Avoids baking in a specific API URL at build time
-  # - Works with Docker's DNS (nginx resolves "app" to backend IP)
-  # - Handles the ephemeral container IPs automatically
-  #
   client:
     build:
       context: ./ticktask-client
       dockerfile: Dockerfile
       args:
-        # Empty = use relative URLs, nginx handles routing
         VITE_API_URL: ""
     container_name: ticktask-client
     restart: unless-stopped
     ports:
       - "3000:80"
+    environment:
+      # This tells nginx where to proxy /api requests
+      # "app" is the Docker Compose service name (resolved by Docker DNS)
+      API_BACKEND_URL: "http://app:8080"
     depends_on:
       - app
     networks:
