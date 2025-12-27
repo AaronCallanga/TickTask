@@ -1,9 +1,8 @@
-
 services:
   # PostgreSQL Database
   db:
     image: postgres:16-alpine
-    container_name: taskmanager-db
+    container_name: ticktask-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: taskmanager
@@ -20,14 +19,14 @@ services:
       retries: 5
       start_period: 10s
     networks:
-      - taskmanager-network
+      - ticktask-network
 
-  # Task Manager Application
+  # Backend API (Spring Boot)
   app:
     build:
-      context: .
+      context: ./ticktask-server
       dockerfile: Dockerfile
-    container_name: taskmanager-app
+    container_name: ticktask-api
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -37,14 +36,31 @@ services:
       DATABASE_PASSWORD: postgres
       JPA_DDL_AUTO: update
       JPA_SHOW_SQL: "true"
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - taskmanager-network
+      - ticktask-network
+
+  # Frontend Client (React + Nginx)
+  client:
+    build:
+      context: ./ticktask-client
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""
+    container_name: ticktask-client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+    networks:
+      - ticktask-network
 
 networks:
-  taskmanager-network:
+  ticktask-network:
     driver: bridge
 
 volumes:

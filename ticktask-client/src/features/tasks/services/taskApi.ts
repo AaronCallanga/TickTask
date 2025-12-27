@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import type { CreateTaskRequest, Task, UpdateTaskRequest } from "@/types/task";
+import type { CreateTaskRequest, Task, UpdateTaskRequest } from "../types";
 
 export const getTasks = async (): Promise<Task[]> => {
     const { data } = await api.get("/api/tasks");

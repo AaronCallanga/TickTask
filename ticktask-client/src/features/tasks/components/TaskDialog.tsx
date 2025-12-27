@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import { useTaskStore } from "@/store/useTaskStore";
-import { useCreateTask, useUpdateTask } from "@/hooks/useTasks";
-import { CreateTaskSchema, type CreateTaskRequest } from "@/types/task";
+import { useTaskStore } from "../hooks/useTaskStore";
+import { useCreateTask, useUpdateTask } from "../hooks/useTasks";
+import { CreateTaskSchema, type CreateTaskRequest } from "../types";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

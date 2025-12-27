@@ -15,7 +15,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}/ticktask-client
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 defaults:
   run:
@@ -44,10 +44,10 @@ jobs:
         run: npm ci
 
       - name: Run Lint
-        run: npm run lint --if-present
+        run: npm run lint
 
       - name: Run Tests
-        run: npm test --if-present
+        run: npm run test
 
       - name: Build Application
         run: npm run build

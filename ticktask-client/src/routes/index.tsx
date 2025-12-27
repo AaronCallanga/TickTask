@@ -1,13 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Plus, LayoutList, Filter } from 'lucide-react'
+import { useState } from 'react'
 
-import { useTasks, useDeleteTask } from '@/hooks/useTasks'
-import { useTaskStore } from '@/store/useTaskStore'
-import { TaskCard } from '@/components/tasks/TaskCard'
+import { useTasks, useDeleteTask, useTaskStore, TaskCard, type Task } from '@/features/tasks'
 import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
-import type { Task } from '@/types/task'
-import { useState } from 'react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -155,7 +152,7 @@ function Dashboard() {
                     <p className="mb-4 mt-2 text-sm text-muted-foreground">
                         {search || filterStatus.length < 3
                             ? "Try adjusting your filters or search terms."
-                            : "You strictly haven't created any tasks yet."}
+                            : "You haven't created any tasks yet."}
                     </p>
                     {(search || filterStatus.length < 3) ? (
                         <Button variant="outline" onClick={() => { setSearch(''); setFilterStatus(['TODO', 'IN_PROGRESS', 'DONE']); }}>

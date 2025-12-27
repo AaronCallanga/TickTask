@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { MoreVertical, Calendar as CalendarIcon, Edit, Trash } from "lucide-react";
 
-import type { Task } from "@/types/task";
+import type { Task } from "../types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
