@@ -157,33 +157,33 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
-      - name: Checkout code
+      - name: Checkout Manifest Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: AaronCallanga/TickTask-DevOps
+          token: ${{ secrets.GH_PAT }}
+          path: TickTask-DevOps
 
       - name: Update Deployment Image Tag
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           
+          # Navigate to the manifest repository
+          cd TickTask-DevOps/kustomize/base
+          
           # Update the kustomization.yaml with new image tag for client
-          cd devops/kustomize/base
-          
-          # Use sed to update the client image tag in kustomization.yaml
-          sed -i "s|name: ghcr.io/aaroncallanga/ticktask/ticktask-client|name: ghcr.io/aaroncallanga/ticktask/ticktask-client\n    newTag: ${SHORT_SHA}|g" kustomization.yaml || true
-          
-          # Alternative: Update newTag for client image specifically
+          # Uses sed to find the client image block and replace the newTag line immediately following it
           sed -i "/ticktask-client/{n;s|newTag:.*|newTag: ${SHORT_SHA}|}" kustomization.yaml
           
           echo "Updated client image tag to: ${SHORT_SHA}"
-        working-directory: ${{ github.workspace }}
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          cd TickTask-DevOps
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add devops/kustomize/
+          git add kustomize/base/kustomization.yaml
           
           # Only commit if there are changes
           if git diff --staged --quiet; then
@@ -192,4 +192,3 @@ jobs:
             git commit -m "ci(client): update image tag to ${{ github.sha }}"
             git push
           fi
-        working-directory: ${{ github.workspace }}

@@ -165,29 +165,33 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
-      - name: Checkout code
+      - name: Checkout Manifest Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: AaronCallanga/TickTask-DevOps
+          token: ${{ secrets.GH_PAT }}
+          path: TickTask-DevOps
 
       - name: Update Deployment Image Tag
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
           
-          # Update the kustomization.yaml with new image tag for server
-          cd devops/kustomize/base
+          # Navigate to the manifest repository
+          cd TickTask-DevOps/kustomize/base
           
-          # Update newTag for server image specifically
+          # Update the kustomization.yaml with new image tag for server
+          # Uses sed to find the server image block and replace the newTag line immediately following it
           sed -i "/ticktask-server/{n;s|newTag:.*|newTag: ${SHORT_SHA}|}" kustomization.yaml
           
           echo "Updated server image tag to: ${SHORT_SHA}"
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          cd TickTask-DevOps
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add devops/kustomize/
+          git add kustomize/base/kustomization.yaml
           
           # Only commit if there are changes
           if git diff --staged --quiet; then
